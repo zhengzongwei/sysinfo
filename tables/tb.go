@@ -1,11 +1,11 @@
 package tables
 
 import (
-	"Golang/cores"
-	"Golang/utils"
 	"fmt"
 	"github.com/olekukonko/tablewriter"
 	"os"
+	"sysinfo/cores"
+	"sysinfo/utils"
 )
 
 func CPUInfoTable() {

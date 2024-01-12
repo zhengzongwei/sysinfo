@@ -18,7 +18,7 @@
 
 package main
 
-import "Golang/commands"
+import "sysinfo/commands"
 
 func main() {
 	commands.Execute()

@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"Golang/tables"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"sysinfo/tables"
 )
 
 var rootCMD = &cobra.Command{
