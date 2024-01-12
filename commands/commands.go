@@ -3,7 +3,6 @@ package commands
 import (
 	"Golang/tables"
 	"fmt"
-	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -30,8 +29,7 @@ var memCmd = &cobra.Command{
 	Use:   "mem",
 	Short: "Query memory information",
 	Run: func(cmd *cobra.Command, args []string) {
-		memInfo, _ := mem.VirtualMemory()
-		fmt.Printf("Memory Info: %+v\n", memInfo)
+		tables.MEMInfoTable()
 	},
 }
 

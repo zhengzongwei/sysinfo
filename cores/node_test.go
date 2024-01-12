@@ -1,4 +1,4 @@
-package utils
+package cores
 
 import (
 	"encoding/json"
@@ -14,4 +14,9 @@ func TestGetCPUInfo(t *testing.T) {
 		return
 	}
 	fmt.Printf("%s", CPUInfoJSON)
+}
+
+func TestGetMemInfo(t *testing.T) {
+	MEMInfo := GetMemInfo()
+	IndentJSON(MEMInfo)
 }
