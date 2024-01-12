@@ -16,8 +16,8 @@ all: $(TARGETS)
 # Build binary for a specific target
 $(TARGETS):
 	@echo "Building for $@"
-	@mkdir -p $(OUTPUT_DIR)
-	GOOS=$(word 1,$(subst /, ,$@)) GOARCH=$(word 2,$(subst /, ,$@)) go build -o $(OUTPUT_DIR)/$@/app_$(shell echo $@ | tr / _)
+	@mkdir -p $(OUTPUT_DIR)/$(word 1,$(subst /, ,$@))
+	GOOS=$(word 1,$(subst /, ,$@)) GOARCH=$(word 2,$(subst /, ,$@)) go build -o $(OUTPUT_DIR)/$(word 1,$(subst /, ,$@))/app_$(subst /,_,$@)
 
 # Clean the compiled binaries
 clean:
