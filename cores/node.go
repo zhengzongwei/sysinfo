@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v3/net"
 )
 
 func GetCPUInfo() []cpu.InfoStat {
@@ -26,14 +28,35 @@ func GetMemInfo() *mem.VirtualMemoryStat {
 	return MEMInfo
 }
 
-func GetDiskInfo() {
+func GetDiskInfo() []disk.UsageStat {
+	var DiskInfo []disk.UsageStat
+	DiskParts, err := disk.Partitions(false)
+	if err != nil {
+		fmt.Printf("获取磁盘分区信息错误：%v", err)
+		return nil
+	}
+	for _, DiskPart := range DiskParts {
+		diskUsage, err := disk.Usage(DiskPart.Mountpoint)
+		if err != nil {
+			fmt.Printf("获取磁盘信息错误：%v", err)
+			continue
+		}
+		DiskInfo = append(DiskInfo, *diskUsage)
+	}
+	return DiskInfo
+}
+
+func GetNetInfo() []net.InterfaceStat {
+	NETInfo, err := net.Interfaces()
+	if err != nil {
+		fmt.Printf("获取网络信息错误：%v", err)
+		return nil
+	}
+	return NETInfo
 
 }
 
 func GetHostInfo() *host.InfoStat {
-	// 当前系统
-	//fmt.Println(runtime.GOOS)
-	//fmt.Println(runtime.GOARCH)
 	HostInfo, err := host.Info()
 	if err != nil {
 		fmt.Printf("获取主机信息错误：%v", err)

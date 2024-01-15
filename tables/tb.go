@@ -3,7 +3,9 @@ package tables
 import (
 	"fmt"
 	"github.com/olekukonko/tablewriter"
+	"github.com/shirou/gopsutil/v3/net"
 	"os"
+	"strings"
 	"sysinfo/cores"
 	"sysinfo/utils"
 )
@@ -11,6 +13,8 @@ import (
 var cpuTable = tablewriter.NewWriter(os.Stdout)
 var memTable = tablewriter.NewWriter(os.Stdout)
 var hostTable = tablewriter.NewWriter(os.Stdout)
+var netTable = tablewriter.NewWriter(os.Stdout)
+var diskTable = tablewriter.NewWriter(os.Stdout)
 
 func init() {
 	// Initialize CPU table header
@@ -20,6 +24,9 @@ func init() {
 	memTable.SetHeader([]string{"Total", "Available", "Used", "UsedPercent", "Free", "Active", "Inactive", "Wired"})
 	hostTable.SetHeader([]string{"HostName", "UpTime", "BootTime", "Procs", "OS", "Platform", "platformFamily",
 		"platformVersion", "KernelArch", "KerverVersion", "virtualizationSystem", "virtualizationRole", "hostId"})
+
+	netTable.SetHeader([]string{"name", "mac", "mtu", "addrs"})
+	diskTable.SetHeader([]string{"path", "fstype", "total", "free", "used", "usedPercent"})
 }
 func CPUTable() {
 
@@ -74,4 +81,44 @@ func HostTable() {
 	}
 	hostTable.Append(row)
 	hostTable.Render()
+}
+
+func NetTable() {
+	NetInfo := cores.GetNetInfo()
+	for _, info := range NetInfo {
+		row := []string{
+			info.Name,
+			info.HardwareAddr,
+			fmt.Sprint(info.MTU),
+			joinAddresses(info.Addrs),
+		}
+		netTable.Append(row)
+	}
+	netTable.Render()
+
+}
+
+func DiskTable() {
+	DiskInfo := cores.GetDiskInfo()
+	for _, info := range DiskInfo {
+		row := []string{
+			info.Path,
+			info.Fstype,
+			utils.ConvertSize(info.Total, "GB"),
+			utils.ConvertSize(info.Free, "GB"),
+			utils.ConvertSize(info.Used, "GB"),
+			fmt.Sprintf("%.2f%%", info.UsedPercent),
+		}
+		diskTable.Append(row)
+	}
+	diskTable.Render()
+}
+
+func joinAddresses(addrs net.InterfaceAddrList) string {
+	var addrStrings []string
+	for _, addr := range addrs {
+		addrStrings = append(addrStrings, addr.Addr)
+	}
+	return strings.Join(addrStrings, "\n")
+
 }

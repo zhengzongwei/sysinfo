@@ -13,3 +13,11 @@ func TestMEMTable(t *testing.T) {
 func TestHostTable(t *testing.T) {
 	HostTable()
 }
+
+func TestNetTable(t *testing.T) {
+	NetTable()
+}
+
+func TestDiskTable(t *testing.T) {
+	DiskTable()
+}
