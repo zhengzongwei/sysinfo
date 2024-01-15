@@ -8,15 +8,20 @@ import (
 	"sysinfo/utils"
 )
 
-func CPUInfoTable() {
+var cpuTable = tablewriter.NewWriter(os.Stdout)
+var memTable = tablewriter.NewWriter(os.Stdout)
+var hostTable = tablewriter.NewWriter(os.Stdout)
 
-	// 创建表格对象
-	table := tablewriter.NewWriter(os.Stdout)
+func init() {
+	// Initialize CPU table header
+	cpuTable.SetHeader([]string{"CPU", "Name", "VendorID", "Family", "Model", "Cores", "Mhz"})
 
-	// 设置表格头部
-	table.SetHeader([]string{"CPU", "Name", "VendorID", "Family", "Model", "Cores", "Mhz"})
-
-	// 将 CPU 信息添加到表格
+	// Initialize MEM table header
+	memTable.SetHeader([]string{"Total", "Available", "Used", "UsedPercent", "Free", "Active", "Inactive", "Wired"})
+	hostTable.SetHeader([]string{"HostName", "UpTime", "BootTime", "Procs", "OS", "Platform", "platformFamily",
+		"platformVersion", "KernelArch", "KerverVersion", "virtualizationSystem", "virtualizationRole", "hostId"})
+}
+func CPUTable() {
 
 	CPUInfo := cores.GetCPUInfo()
 	for _, info := range CPUInfo {
@@ -29,19 +34,13 @@ func CPUInfoTable() {
 			fmt.Sprint(info.Cores),
 			fmt.Sprint(info.Mhz),
 		}
-		table.Append(row)
+		cpuTable.Append(row)
 	}
-	table.Render()
+	cpuTable.Render()
 }
 
-func MEMInfoTable() {
-	// 创建表格对象
-	table := tablewriter.NewWriter(os.Stdout)
-
-	// 设置表格头部
-	table.SetHeader([]string{"Total", "Available", "used", "usedPercent", "free", "active", "inactive", "wired"})
+func MEMTable() {
 	MEMInfo := cores.GetMemInfo()
-
 	row := []string{
 		utils.ConvertSize(MEMInfo.Total, "MB"),
 		utils.ConvertSize(MEMInfo.Available, "MB"),
@@ -52,6 +51,27 @@ func MEMInfoTable() {
 		utils.ConvertSize(MEMInfo.Inactive, "MB"),
 		utils.ConvertSize(MEMInfo.Wired, "MB"),
 	}
-	table.Append(row)
-	table.Render()
+	memTable.Append(row)
+	memTable.Render()
+}
+
+func HostTable() {
+	HostInfo := cores.GetHostInfo()
+	row := []string{
+		HostInfo.Hostname,
+		fmt.Sprint(HostInfo.Uptime),
+		fmt.Sprint(HostInfo.BootTime),
+		fmt.Sprint(HostInfo.Procs),
+		HostInfo.OS,
+		HostInfo.Platform,
+		HostInfo.PlatformFamily,
+		HostInfo.PlatformVersion,
+		HostInfo.KernelArch,
+		HostInfo.KernelVersion,
+		HostInfo.VirtualizationSystem,
+		HostInfo.VirtualizationRole,
+		HostInfo.HostID,
+	}
+	hostTable.Append(row)
+	hostTable.Render()
 }

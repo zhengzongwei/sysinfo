@@ -16,12 +16,21 @@ var rootCMD = &cobra.Command{
 	},
 }
 
+var hostCmd = &cobra.Command{
+	Use:   "host",
+	Short: "Query HOST information",
+	Run: func(cmd *cobra.Command, args []string) {
+
+		tables.HostTable()
+	},
+}
+
 var cpuCmd = &cobra.Command{
 	Use:   "cpu",
 	Short: "Query CPU information",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		tables.CPUInfoTable()
+		tables.CPUTable()
 	},
 }
 
@@ -29,7 +38,7 @@ var memCmd = &cobra.Command{
 	Use:   "mem",
 	Short: "Query memory information",
 	Run: func(cmd *cobra.Command, args []string) {
-		tables.MEMInfoTable()
+		tables.MEMTable()
 	},
 }
 
@@ -42,6 +51,7 @@ func Execute() {
 
 func init() {
 	// Register subcommands
+	rootCMD.AddCommand(hostCmd)
 	rootCMD.AddCommand(cpuCmd)
 	rootCMD.AddCommand(memCmd)
 	// Add more subcommands here

@@ -2,10 +2,14 @@ package tables
 
 import "testing"
 
-func TestCPUInfoTable(t *testing.T) {
-	CPUInfoTable()
+func TestCPUTable(t *testing.T) {
+	CPUTable()
 }
 
-func TestMEMInfoTable(t *testing.T) {
-	MEMInfoTable()
+func TestMEMTable(t *testing.T) {
+	MEMTable()
+}
+
+func TestHostTable(t *testing.T) {
+	HostTable()
 }
