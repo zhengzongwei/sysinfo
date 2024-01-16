@@ -74,10 +74,3 @@ func IndentJSON(data interface{}) {
 	}
 	fmt.Printf("%s", DataJSON)
 }
-
-//type nodeInfo struct {
-//
-//}
-//func GetNodeInfo() []nodeInfo {
-//
-//}
