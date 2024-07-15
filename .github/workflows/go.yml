@@ -21,8 +21,9 @@ jobs:
       - name: Build binaries
         run: make
 
-      - name: List repository contents
-        run: ls -R
+      - name: Get Tag Name
+        id: get_tag
+        run: echo ::set-output name=TAG_NAME::${GITHUB_REF/refs\/tags\//}
 
       - name: Create Release
         id: create_release
@@ -30,9 +31,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: Release notes for ${{ github.ref }}
+          tag_name: ${{ steps.get_tag.outputs.TAG_NAME }}
+          release_name: Release ${{ steps.get_tag.outputs.TAG_NAME }}
+          body: Release notes for ${{ steps.get_tag.outputs.TAG_NAME }}
           draft: false
           prerelease: false
           commitish: ${{ github.sha }}
@@ -47,7 +48,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/darwin/app_darwin_amd64
-          asset_name: app_darwin_amd64_v${{ github.ref }}
+          asset_name: app_darwin_amd64_${{ steps.get_tag.outputs.TAG_NAME }}
           asset_content_type: application/octet-stream
 
       - name: Upload Release Asset (Mac arm64)
@@ -58,7 +59,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/darwin/app_darwin_arm64
-          asset_name: app_darwin_arm64_v${{ github.ref }}
+          asset_name: app_darwin_arm64_${{ steps.get_tag.outputs.TAG_NAME }}
           asset_content_type: application/octet-stream
 
       - name: Upload Release Asset (Linux amd64)
@@ -68,8 +69,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/darwin/app_linux_amd64
-          asset_name: app_linux_amd64_v${{ github.ref }}
+          asset_path: ./build/linux/app_linux_amd64
+          asset_name: app_linux_amd64_${{ steps.get_tag.outputs.TAG_NAME }}
           asset_content_type: application/octet-stream
 
       - name: Upload Release Asset (Linux arm64)
@@ -79,8 +80,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/darwin/app_linux_arm64
-          asset_name: app_linux_arm64_v${{ github.ref }}
+          asset_path: ./build/linux/app_linux_arm64
+          asset_name: app_linux_arm64_${{ steps.get_tag.outputs.TAG_NAME }}
           asset_content_type: application/octet-stream
 
       - name: Upload Release Asset (Windows amd64)
@@ -90,8 +91,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/darwin/app_windows_amd64.exe
-          asset_name: app_windows_amd64_v${{ github.ref }}.exe
+          asset_path: ./build/windows/app_windows_amd64.exe
+          asset_name: app_windows_amd64_${{ steps.get_tag.outputs.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
 
       - name: Upload Release Asset (Windows arm64)
@@ -101,8 +102,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/darwin/app_windows_arm64.exe
-          asset_name: app_windows_arm64_v${{ github.ref }}.exe
+          asset_path: ./build/windows/app_windows_arm64.exe
+          asset_name: app_windows_arm64_${{ steps.get_tag.outputs.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
 
       - name: Upload Release Asset (Windows 386)
@@ -112,6 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/darwin/app_windows_386.exe
-          asset_name: app_windows_386_v${{ github.ref }}.exe
+          asset_path: ./build/windows/app_windows_386.exe
+          asset_name: app_windows_386_${{ steps.get_tag.outputs.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
+
